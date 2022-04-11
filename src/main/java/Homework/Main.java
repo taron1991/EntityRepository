@@ -51,7 +51,7 @@ public class Main {
 
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select full_name,salary_by_university,university from pupils " +
-                    "where university='МГТУ Станкин' order by salary_by_university asc;");
+                    "where university='МГТУ Станкин' order by salary_by_university asc");
 
             while (resultSet.next()) {
                 System.out.println(resultSet.getString(1) + " " + resultSet.getInt(2)
@@ -65,7 +65,7 @@ public class Main {
 
     }
 
-    private static void AVGresultMGTU() throws SQLException {
+    private static void AVGresultMGTU()  {
         ResultSet resultSet = null;
         try {
             Statement statement = connection.createStatement();
@@ -99,7 +99,7 @@ public class Main {
 
     }
 
-    private static void AVGresultMIREA() throws SQLException {
+    private static void AVGresultMIREA()  {
         ResultSet resultSet = null;
         try {
             Statement statement = connection.createStatement();
@@ -131,7 +131,7 @@ public class Main {
 
     }
 
-    private static void AVGresultRUDN() throws SQLException {
+    private static void AVGresultRUDN()  {
         ResultSet resultSet = null;
         try {
             Statement statement = connection.createStatement();
@@ -165,17 +165,21 @@ public class Main {
 
     }
 
-    private static void init() throws Exception {
+    private static void init()  {
         InputStream inputStream = Main
                 .class
                 .getClassLoader()
                 .getResourceAsStream("app.properties");
 
-        Properties properties = new Properties();
-        properties.load(inputStream);
-        Class.forName(properties.getProperty("driver-class-name"));
-        connection = DriverManager.getConnection(properties.getProperty("url"),
-                properties.getProperty("username"), properties.getProperty("password"));
+        try {
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            Class.forName(properties.getProperty("driver-class-name"));
+            connection = DriverManager.getConnection(properties.getProperty("url"),
+                    properties.getProperty("username"), properties.getProperty("password"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

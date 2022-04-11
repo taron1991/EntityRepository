@@ -8,107 +8,175 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.*;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    private static Session session;
-    private static SessionFactory sessionFactory;
-    private static StandardServiceRegistry serviceRegistry;
+    private static Connection connection;
 
     public static void main(String[] args) {
+        try {
+            init();
+            AVGresultRUDN();
+            //AVGresultRUDN();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void AVGresultStankin() {
+
+        ResultSet resultSet = null;
+        try {
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery("  select university,avg(salary_by_university) " +
+                    "as avg from Pupils where salary_by_university>4000 " +
+                    "group by university having university='МГТУ Станкин'");
+
+            boolean next = resultSet.next();
+
+            while (next) {
+                System.out.println(resultSet.getString(1) + " , среднее значение " + resultSet.getDouble(2));
+                break;
+            }
+
+            if (!next) {
+                System.out.println("среднего результата нет");
+                return;
+            }
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select full_name,salary_by_university,university from pupils " +
+                    "where university='МГТУ Станкин' order by salary_by_university asc;");
+
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + " " + resultSet.getInt(2)
+                        + " " + resultSet.getString(3));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
+    private static void AVGresultMGTU() throws SQLException {
+        ResultSet resultSet = null;
+        try {
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery("  select university,avg(salary_by_university) " +
+                    "as avg from Pupils where salary_by_university>4000 " +
+                    "group by university having university='МГТУ им.Баумана'");
 
-    private static List AVGresultStankin() {
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery(" from Pupils where university='МГТУ Станкин'");
-        List<Pupils> list = query.list();
+            boolean next = resultSet.next();
 
-        List<Pupils> collect = list.stream()
-                .filter(x -> x.getSalary_by_university() > 4000)
-                .sorted(Comparator.comparingInt(Pupils::getSalary_by_university)).collect(Collectors.toList());
+            while (next) {
+                System.out.println(resultSet.getString(1) + " , среднее значение " + resultSet.getDouble(2));
+                break;
+            }
 
+            if (!next) {
+                System.out.println("среднего результата нет");
+                return;
+            }
 
-        System.out.println(collect);
-        session.getTransaction().commit();
-        return list;
-    }
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select full_name,salary_by_university,university from pupils " +
+                    "where university='МГТУ им.Баумана' order by salary_by_university asc;");
 
-    private static List AVGresultMGTU() {
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery(" from Pupils where university='МГТУ им.Баумана'");
-        List<Pupils> list = query.list();
-
-        List<Pupils> collect = list.stream()
-                .filter(x -> x.getSalary_by_university() > 4000)
-                .sorted(Comparator.comparingInt(Pupils::getSalary_by_university)).collect(Collectors.toList());
-
-
-        System.out.println(collect);
-        session.getTransaction().commit();
-        return list;
-    }
-
-    private static List AVGresultMIREA() {
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery(" from Pupils where university='МИРЭА'");
-        List<Pupils> list = query.list();
-
-        double asDouble = list.stream().mapToInt(x -> (Integer) x.getSalary_by_university())
-                .filter(x -> x > 4000).average().orElseThrow(NoSuchElementException::new);
-
-
-        System.out.println(asDouble);
-        session.getTransaction().commit();
-        return list;
-    }
-
-    private static List AVGresultRUDN() {
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery(" from Pupils where university='РУДН'");
-        List<Pupils> list = query.list();
-
-        double asDouble = list.stream().mapToInt(x -> (Integer) x.getSalary_by_university())
-                .filter(x -> x > 4000).average().orElseThrow(NoSuchElementException::new);
-
-        System.out.println(asDouble);
-        session.getTransaction().commit();
-        return list;
-    }
-
-
-    private static void addPupil(Pupils pupils) {
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        session.save(pupils);
-        session.getTransaction().commit();
-    }
-
-    private static void init() {
-        serviceRegistry = new StandardServiceRegistryBuilder()
-                .configure()
-                .build();
-
-        sessionFactory = new MetadataSources(serviceRegistry)
-                .buildMetadata().buildSessionFactory();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + " " + resultSet.getInt(2)
+                        + " " + resultSet.getString(3));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    private static void init2() {
-        sessionFactory = new Configuration()
-                .addAnnotatedClass(Pupils.class)
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
+    private static void AVGresultMIREA() throws SQLException {
+        ResultSet resultSet = null;
+        try {
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery("  select university,avg(salary_by_university) " +
+                    "as avg from Pupils where salary_by_university>4000 " +
+                    "group by university having university='МИРЭА'");
 
+            boolean next = resultSet.next();
+
+            while (next) {
+                System.out.println(resultSet.getString(1) + " , среднее значение " + resultSet.getDouble(2));
+            }
+
+            if (!next) {
+                System.out.println("среднего результата нет");
+                return;
+            }
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select full_name,salary_by_university,university from pupils " +
+                    "where university='МИРЭА' order by salary_by_university asc;");
+
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + " " + resultSet.getInt(2)
+                        + " " + resultSet.getString(3));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
+
+    private static void AVGresultRUDN() throws SQLException {
+        ResultSet resultSet = null;
+        try {
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery("  select university,avg(salary_by_university) " +
+                    "as avg from Pupils where salary_by_university>4000 " +
+                    "group by university having university='РУДН'");
+
+            boolean next = resultSet.next();
+
+            while (next) {
+                System.out.println(resultSet.getString(1) + " , среднее значение " + resultSet.getDouble(2));
+            }
+
+
+            if (!next) {
+                System.out.println("среднего результата нет");
+                return;
+            }
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select full_name,salary_by_university,university from pupils " +
+                    "where university='РУДН' order by salary_by_university asc;");
+
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + " " + resultSet.getInt(2)
+                        + " " + resultSet.getString(3));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void init() throws Exception {
+        InputStream inputStream = Main
+                .class
+                .getClassLoader()
+                .getResourceAsStream("app.properties");
+
+        Properties properties = new Properties();
+        properties.load(inputStream);
+        Class.forName(properties.getProperty("driver-class-name"));
+        connection = DriverManager.getConnection(properties.getProperty("url"),
+                properties.getProperty("username"), properties.getProperty("password"));
+
+    }
+
 }

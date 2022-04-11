@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@Cacheable
 @Table(name = "")
 public class Pupils {
 

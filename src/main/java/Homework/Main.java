@@ -21,11 +21,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
-        init2();
-        AVGresultStankin();
-
-
     }
 
 
@@ -75,26 +70,7 @@ public class Main {
         session.getTransaction().commit();
         return list;
     }
-    /**
-     * Вывести вуз и среднее значение стипендии в отсортированном виде (в порядке возрастания, по стипендии)
-     */
-    private static List sortedSalaryAndUniversity(){
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
 
-        Query query = session.createQuery("SELECT MAX(salary_by_university) as max FROM Pupils ");
-        List resultList = query.getResultList();
-        System.out.println("Max salary is "+resultList);
-
-        session.getTransaction().commit();
-        return resultList;
-    }
-
-    /**
-     * Найти среднее значение стипендии для каждого ВУЗа превышающее 4000.
-     * Задачу решаем 2 способами: через нативный SQL и через STREAM API
-     * @return double value
-     */
     private static List AVGresultRUDN() {
         session = sessionFactory.getCurrentSession();
         session.beginTransaction();
